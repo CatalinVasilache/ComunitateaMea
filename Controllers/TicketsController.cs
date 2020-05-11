@@ -54,11 +54,13 @@ namespace ComunitateaMea.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,PublishedDate,Votes")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,PublishedDate")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
                 ticket.Id = Guid.NewGuid();
+                ticket.PublishedDate = DateTime.Today;
+                ticket.Votes = 0;
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
