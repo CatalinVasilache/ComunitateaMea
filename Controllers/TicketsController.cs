@@ -7,40 +7,91 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ComunitateaMea.Data;
 using ComunitateaMea.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using ComunitateaMea.Authorization;
+//using Microsoft.AspNet.Identity;
 
 namespace ComunitateaMea.Controllers
 {
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public TicketsController(ApplicationDbContext context)
+
+        public TicketsController(
+            ApplicationDbContext context, 
+            IAuthorizationService authorizationService, 
+            UserManager<IdentityUser> userManager)
+            : base()
         {
             _context = context;
+            _authorizationService = authorizationService;
+            _userManager = userManager;
         }
+
+        public Ticket Ticket { get; set; }
 
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ticket.ToListAsync());
+            var tickets = from c in _context.Ticket
+                          select c;
+
+            var isAuthorized = User.IsInRole(Constants.TicketManagersRole) ||
+                               User.IsInRole(Constants.TicketAdministratorsRole);
+
+            var currentUserId = _userManager.GetUserId(User);
+
+            // Only approved tickets are shown UNLESS you're authorized to see them
+            // or you are the owner.
+            if (!isAuthorized)
+            {
+                tickets = tickets.Where(c => c.StatusApproval == TicketStatusApproval.Approved
+                                            || c.OwnerId == currentUserId);
+            }
+
+            //Ticket = await tickets.ToListAsync();
+            return View(await tickets.ToListAsync());
         }
 
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var ticket = await _context.Ticket
+            Ticket = await _context.Ticket
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
+
+            if (Ticket == null)
             {
                 return NotFound();
             }
 
-            return View(ticket);
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Challenge();
+            }
+
+            var isAuthorized = User.IsInRole(Constants.TicketManagersRole) ||
+                               User.IsInRole(Constants.TicketAdministratorsRole);
+
+            var currentUserId = _userManager.GetUserId(User);
+
+            if (!isAuthorized
+                && currentUserId != Ticket.OwnerId
+                && Ticket.StatusApproval != TicketStatusApproval.Approved)
+            {
+                return Forbid();
+            }
+
+            return View(Ticket);
         }
 
         // GET: Tickets/Create
@@ -54,13 +105,21 @@ namespace ComunitateaMea.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,PublishedDate")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,PublishedDate,Votes")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
+                if (!(await _authorizationService.AuthorizeAsync( User, ticket, TicketOperations.Create)).Succeeded)
+                {
+                    return Forbid();
+                }
+
                 ticket.Id = Guid.NewGuid();
                 ticket.PublishedDate = DateTime.Today;
                 ticket.Votes = 0;
+                ticket.StatusApproval = TicketStatusApproval.Submitted;
+                ticket.Status = TicketStatus.Todo;
+                ticket.OwnerId = _userManager.GetUserId(User);
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -76,12 +135,16 @@ namespace ComunitateaMea.Controllers
                 return NotFound();
             }
 
-            var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket == null)
+            Ticket = await _context.Ticket.FindAsync(id);
+            if (Ticket == null)
             {
                 return NotFound();
             }
-            return View(ticket);
+            //if (!(await _authorizationService.AuthorizeAsync(User, Ticket, TicketOperations.Update)).Succeeded)
+            //{
+            //    return Forbid();
+            //}
+            return View(Ticket);
         }
 
         // POST: Tickets/Edit/5
@@ -89,7 +152,7 @@ namespace ComunitateaMea.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,PublishedDate,Votes")] Ticket ticket)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,PublishedDate,Votes,OwnerId")] Ticket ticket)
         {
             if (id != ticket.Id)
             {
@@ -100,6 +163,37 @@ namespace ComunitateaMea.Controllers
             {
                 try
                 {
+                    if (ticket == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if (!(await _authorizationService.AuthorizeAsync(User, ticket, TicketOperations.Update)).Succeeded)
+                    {
+                        return Forbid();
+                    }
+
+                    //Ticket.OwnerId = ticket.OwnerId;
+
+                    //_context.Attach(Ticket).State = EntityState.Modified;
+
+                    //if (ticket.StatusApproval == TicketStatusApproval.Approved)
+                    //{
+                    //    // If the contact is updated after approval, 
+                    //    // and the user cannot approve,
+                    //    // set the status back to submitted so the update can be
+                    //    // checked and approved.
+                    //    var canApprove = await _authorizationService.AuthorizeAsync(User,
+                    //                            ticket,
+                    //                            TicketOperations.Approve);
+
+                    //    if (!canApprove.Succeeded)
+                    //    {
+                    //        ticket.StatusApproval = TicketStatusApproval.Submitted;
+                    //    }
+                    //}
+
+                    ticket.OwnerId = _userManager.GetUserId(User);
                     _context.Update(ticket);
                     await _context.SaveChangesAsync();
                 }
@@ -134,6 +228,11 @@ namespace ComunitateaMea.Controllers
                 return NotFound();
             }
 
+            if (!(await _authorizationService.AuthorizeAsync(User, ticket, TicketOperations.Delete)).Succeeded)
+            {
+                return Forbid();
+            }
+
             return View(ticket);
         }
 
@@ -143,6 +242,15 @@ namespace ComunitateaMea.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var ticket = await _context.Ticket.FindAsync(id);
+
+            //var isAuthorized = await _authorizationService.AuthorizeAsync(
+            //                                         User, ticket,
+            //                                         TicketOperations.Delete);
+            //if (!isAuthorized.Succeeded)
+            //{
+            //    return Forbid();
+            //}
+
             _context.Ticket.Remove(ticket);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

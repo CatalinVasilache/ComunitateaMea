@@ -31,6 +31,7 @@ namespace ComunitateaMea.Models
     public enum TicketStatus
     {
         Done,
+        Todo,
         InProgress,
         Rejected
     }

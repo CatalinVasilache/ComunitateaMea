@@ -8,7 +8,7 @@ namespace ComunitateaMea.Authorization
 {
     public class TicketIsOwnerAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Ticket>
     {
-        UserManager<IdentityUser> _userManager;
+        readonly UserManager<IdentityUser> _userManager;
 
         public TicketIsOwnerAuthorizationHandler(UserManager<IdentityUser>
             userManager)

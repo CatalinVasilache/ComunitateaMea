@@ -37,7 +37,6 @@ namespace ComunitateaMea
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
-            services.AddRazorPages();
 
             services.AddControllers(config =>
            {

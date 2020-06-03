@@ -1,6 +1,7 @@
-﻿@page
-@model ComunitateaMea.Views.Tickets.IndexModel
-
+﻿@model IEnumerable<ComunitateaMea.Models.Ticket>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@using ComunitateaMea.Authorization;
 @{
     ViewData["Title"] = "Index";
 }
@@ -14,61 +15,62 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Ticket[0].Title)
+                @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ticket[0].Description)
+                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ticket[0].PublishedDate)
+                @Html.DisplayNameFor(model => model.PublishedDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ticket[0].Votes)
+                @Html.DisplayNameFor(model => model.Votes)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ticket[0].StatusApproval)
+                @Html.DisplayNameFor(model => model.StatusApproval)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Ticket) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublishedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Votes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @if ((await AuthorizationService.AuthorizeAsync(
-                User, item,
-                TicketOperations.Update)).Succeeded)
-                {
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
-                    <text> | </text>
-                }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PublishedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Votes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StatusApproval)
+                </td>
+                <td>
+                    @if ((await AuthorizationService.AuthorizeAsync(
+          User, item,
+          TicketOperations.Update)).Succeeded)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <text> | </text>
+                    }
 
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
 
-                @if ((await AuthorizationService.AuthorizeAsync(
-                User, item,
-                TicketOperations.Delete)).Succeeded)
-                {
-                    <text> | </text>
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                }
-            </td>
-        </tr>
-}
+                    @if ((await AuthorizationService.AuthorizeAsync(
+          User, item,
+          TicketOperations.Delete)).Succeeded)
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
