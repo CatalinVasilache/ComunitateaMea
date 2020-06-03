@@ -94,6 +94,30 @@ namespace ComunitateaMea.Controllers
             return View(Ticket);
         }
 
+        // POST: Tickets/Details/Status
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details(Guid id, TicketStatusApproval status)
+        {
+            var ticket = await _context.Ticket.FirstOrDefaultAsync(
+                                                      m => m.Id == id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            var ticketOperation = (status == TicketStatusApproval.Approved)
+                                                       ? TicketOperations.Approve
+                                                       : TicketOperations.Reject;
+
+            ticket.StatusApproval = status;
+            _context.Ticket.Update(ticket);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Tickets/Create
         public IActionResult Create()
         {
@@ -105,15 +129,10 @@ namespace ComunitateaMea.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,PublishedDate,Votes")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
-                if (!(await _authorizationService.AuthorizeAsync( User, ticket, TicketOperations.Create)).Succeeded)
-                {
-                    return Forbid();
-                }
-
                 ticket.Id = Guid.NewGuid();
                 ticket.PublishedDate = DateTime.Today;
                 ticket.Votes = 0;
@@ -140,10 +159,6 @@ namespace ComunitateaMea.Controllers
             {
                 return NotFound();
             }
-            //if (!(await _authorizationService.AuthorizeAsync(User, Ticket, TicketOperations.Update)).Succeeded)
-            //{
-            //    return Forbid();
-            //}
             return View(Ticket);
         }
 
@@ -168,11 +183,6 @@ namespace ComunitateaMea.Controllers
                         return NotFound();
                     }
 
-                    if (!(await _authorizationService.AuthorizeAsync(User, ticket, TicketOperations.Update)).Succeeded)
-                    {
-                        return Forbid();
-                    }
-
                     //Ticket.OwnerId = ticket.OwnerId;
 
                     //_context.Attach(Ticket).State = EntityState.Modified;
@@ -192,7 +202,7 @@ namespace ComunitateaMea.Controllers
                     //        ticket.StatusApproval = TicketStatusApproval.Submitted;
                     //    }
                     //}
-
+                    ticket.PublishedDate = DateTime.Today;
                     ticket.OwnerId = _userManager.GetUserId(User);
                     _context.Update(ticket);
                     await _context.SaveChangesAsync();
