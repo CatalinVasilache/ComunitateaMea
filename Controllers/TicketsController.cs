@@ -18,13 +18,13 @@ namespace ComunitateaMea.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IAuthorizationService _authorizationService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
 
         public TicketsController(
             ApplicationDbContext context, 
             IAuthorizationService authorizationService, 
-            UserManager<IdentityUser> userManager)
+            UserManager<AppUser> userManager)
             : base()
         {
             _context = context;
