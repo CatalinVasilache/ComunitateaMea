@@ -16,6 +16,10 @@ namespace ComunitateaMea.Authorization
           new OperationAuthorizationRequirement { Name = Constants.ApproveOperationName };
         public static OperationAuthorizationRequirement Reject =
           new OperationAuthorizationRequirement { Name = Constants.RejectOperationName };
+        public static OperationAuthorizationRequirement TicketAdministrators =
+          new OperationAuthorizationRequirement { Name = Constants.TicketAdministratorsRole };
+        public static OperationAuthorizationRequirement TicketManagers =
+          new OperationAuthorizationRequirement { Name = Constants.TicketManagersRole };
     }
 
     public class Constants
