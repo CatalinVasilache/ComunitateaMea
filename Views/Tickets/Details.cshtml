@@ -43,6 +43,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StatusApproval)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.County)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.County)
+        </dd>
     </dl>
 </div>
 @if (Model.StatusApproval != TicketStatusApproval.Approved)

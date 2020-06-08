@@ -10,6 +10,7 @@ using ComunitateaMea.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using ComunitateaMea.Authorization;
+using ComunitateaMea.Extensions;
 //using Microsoft.AspNet.Identity;
 
 namespace ComunitateaMea.Controllers
@@ -49,8 +50,8 @@ namespace ComunitateaMea.Controllers
             // or you are the owner.
             if (!isAuthorized)
             {
-                tickets = tickets.Where(c => c.StatusApproval == TicketStatusApproval.Approved
-                                            || c.OwnerId == currentUserId);
+                tickets = tickets.Where(c => c.StatusApproval == TicketStatusApproval.Approved && c.County == User.GetCounty()
+                                            || c.OwnerId == currentUserId && c.County == User.GetCounty());
             }
 
             //Ticket = await tickets.ToListAsync();
@@ -139,6 +140,7 @@ namespace ComunitateaMea.Controllers
                 ticket.StatusApproval = TicketStatusApproval.Submitted;
                 ticket.Status = TicketStatus.Todo;
                 ticket.OwnerId = _userManager.GetUserId(User);
+                ticket.County = User.GetCounty();
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -54,9 +55,9 @@ namespace ComunitateaMea.Areas.Identity.Pages.Account
             [Display(Name = "Age")]
             public int Age { get; set; }
 
-            //[Required]
-            //[Display(Name = "County")]
-            //public County County { get; set; }
+            [Required]
+            [Display(Name = "County")]
+            public County County { get; set; }
 
             [Required]
             [EmailAddress]
@@ -87,11 +88,15 @@ namespace ComunitateaMea.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new AppUser { FullName = Input.FullName, Email = Input.Email, Age = Input.Age };
+                var user = new AppUser { UserName = Input.Email, Email = Input.Email, FullName = Input.FullName, Age = Input.Age, County = Input.County };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    await _userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
+                    await _userManager.AddClaimAsync(user, new Claim("Age", user.Age.ToString()));
+                    await _userManager.AddClaimAsync(user, new Claim("County", user.County.ToString()));
+
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

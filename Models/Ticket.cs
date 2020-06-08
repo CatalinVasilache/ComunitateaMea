@@ -19,6 +19,7 @@ namespace ComunitateaMea.Models
 
         public TicketStatusApproval StatusApproval { get; set; }
         public TicketStatus Status { get; set; }
+        public string County { get; set; }
     }
 
     public enum TicketStatusApproval
