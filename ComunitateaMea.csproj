@@ -5,6 +5,19 @@
     <UserSecretsId>aspnet-ComunitateaMea-CD485FC3-93FE-49AD-945D-B60FF117D3FA</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200613214110_VoteUserTicket.cs" />
+    <Compile Remove="Data\Migrations\20200613214110_VoteUserTicket.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200613214927_VoteUserTicketUpdate.cs" />
+    <Compile Remove="Data\Migrations\20200613214927_VoteUserTicketUpdate.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200613215242_VoteUserTicketUpdate.cs" />
+    <Compile Remove="Data\Migrations\20200613215242_VoteUserTicketUpdate.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200613215745_VoteUserTicketString.cs" />
+    <Compile Remove="Data\Migrations\20200613215745_VoteUserTicketString.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200613220005_VoteUserTicketUpdate.cs" />
+    <Compile Remove="Data\Migrations\20200613220005_VoteUserTicketUpdate.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.4" />

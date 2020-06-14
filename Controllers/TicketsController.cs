@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using ComunitateaMea.Authorization;
 using ComunitateaMea.Extensions;
+using System.Diagnostics;
+using System.Web;
+using Microsoft.AspNetCore.Http;
 //using Microsoft.AspNet.Identity;
 
 namespace ComunitateaMea.Controllers
@@ -40,22 +43,28 @@ namespace ComunitateaMea.Controllers
         {
             var tickets = from c in _context.Ticket
                           select c;
-
-            var isAuthorized = User.IsInRole(Constants.TicketManagersRole) ||
-                               User.IsInRole(Constants.TicketAdministratorsRole);
+            System.Diagnostics.Debug.WriteLine("tickets index get:", tickets);
+            var isAuthorizedAdministrator = User.IsInRole(Constants.TicketAdministratorsRole);
+            var isAuthorizedManager = User.IsInRole(Constants.TicketManagersRole);
 
             var currentUserId = _userManager.GetUserId(User);
 
             // Only approved tickets are shown UNLESS you're authorized to see them
             // or you are the owner.
-            if (!isAuthorized)
+
+            if (!(isAuthorizedAdministrator || isAuthorizedManager))
             {
-                tickets = tickets.Where(c => c.StatusApproval == TicketStatusApproval.Approved && c.County == User.GetCounty()
-                                            || c.OwnerId == currentUserId && c.County == User.GetCounty());
+                tickets = tickets.Where(c => (c.StatusApproval == TicketStatusApproval.Approved && c.County == User.GetCounty())
+                                            || (c.OwnerId == currentUserId && c.County == User.GetCounty()));
+            }
+
+            if(isAuthorizedManager)
+            {
+                tickets = tickets.Where(c => (c.County == User.GetCounty()) || (c.OwnerId == currentUserId && c.County == User.GetCounty())).AsQueryable().OrderBy(c => c.Votes);
             }
 
             //Ticket = await tickets.ToListAsync();
-            return View(await tickets.ToListAsync());
+            return View(await tickets.OrderByDescending(c => c.Votes).ToListAsync());
         }
 
         // GET: Tickets/Details/5
@@ -98,10 +107,12 @@ namespace ComunitateaMea.Controllers
         // POST: Tickets/Details/Status
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Details(Guid id, TicketStatusApproval status)
+        public async Task<IActionResult> Details(Guid id, TicketStatusApproval status, TicketStatus statusProgress)
         {
             var ticket = await _context.Ticket.FirstOrDefaultAsync(
                                                       m => m.Id == id);
+            System.Diagnostics.Debug.WriteLine("ticket edit:", ticket);
+
 
             if (ticket == null)
             {
@@ -112,7 +123,14 @@ namespace ComunitateaMea.Controllers
                                                        ? TicketOperations.Approve
                                                        : TicketOperations.Reject;
 
+            if (statusProgress != TicketStatus.Todo)
+            {
+                status = TicketStatusApproval.Approved;
+            }
+
+
             ticket.StatusApproval = status;
+            ticket.Status = statusProgress;
             _context.Ticket.Update(ticket);
             await _context.SaveChangesAsync();
 
@@ -130,7 +148,7 @@ namespace ComunitateaMea.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description")] Ticket ticket, IFormFile file)
         {
             if (ModelState.IsValid)
             {
@@ -204,8 +222,11 @@ namespace ComunitateaMea.Controllers
                     //        ticket.StatusApproval = TicketStatusApproval.Submitted;
                     //    }
                     //}
+                  
                     ticket.PublishedDate = DateTime.Today;
                     ticket.OwnerId = _userManager.GetUserId(User);
+                    ticket.County = User.GetCounty();
+                    ticket.Status = TicketStatus.Todo;
                     _context.Update(ticket);
                     await _context.SaveChangesAsync();
                 }
@@ -265,6 +286,57 @@ namespace ComunitateaMea.Controllers
 
             _context.Ticket.Remove(ticket);
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Tickets/Vote/5
+        public async Task<IActionResult> Vote(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var ticket = await _context.Ticket
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            var votesUserTicket = await _context.VoteUserTicket.FirstOrDefaultAsync(m => (m.UserId == _userManager.GetUserId(User) && m.TicketId == ticket.Id.ToString()));
+            if(!(votesUserTicket == null))
+            {
+                return Forbid();
+            }
+
+            return View(ticket);
+        }
+
+        // POST: Tickets/Vote/5
+        [HttpPost, ActionName("Vote")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VoteConfirmed(Guid id, VoteUserTicket voteUserTicket)
+        {
+            var ticket = await _context.Ticket.FindAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            //var ticket = await _context.Ticket
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            System.Diagnostics.Debug.WriteLine("ticket index post:", ticket);
+            var votesUserTicket = await _context.VoteUserTicket.FirstOrDefaultAsync(m => (m.UserId == _userManager.GetUserId(User) && m.TicketId == ticket.Id.ToString()));
+            if (votesUserTicket == null)
+            {
+                ticket.Votes += 1;
+                voteUserTicket.UserId = _userManager.GetUserId(User);
+                voteUserTicket.TicketId = ticket.Id.ToString();
+                _context.VoteUserTicket.Add(voteUserTicket);
+                _context.Ticket.Update(ticket);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 

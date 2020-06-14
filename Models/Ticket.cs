@@ -26,14 +26,14 @@ namespace ComunitateaMea.Models
     {
         Submitted,
         Approved,
-        Rejected
+        Rejected    
     }
 
     public enum TicketStatus
     {
-        Done,
         Todo,
         InProgress,
-        Rejected
+        Done,
+        NotPossible
     }
 }

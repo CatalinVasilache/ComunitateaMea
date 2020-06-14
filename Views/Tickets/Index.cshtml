@@ -30,6 +30,9 @@
                 @Html.DisplayNameFor(model => model.StatusApproval)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.County)
             </th>
             <th></th>
@@ -55,12 +58,17 @@
                 @Html.DisplayFor(modelItem => item.StatusApproval)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.County)
             </td>
             <td>
+                <a asp-action="Vote" asp-route-id="@item.Id">Vote</a>
+                |
                 @if ((await AuthorizationService.AuthorizeAsync(
-     User, item,
-     TicketOperations.Update)).Succeeded)
+  User, item,
+  TicketOperations.Update)).Succeeded)
                 {
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                     <text> | </text>
@@ -69,8 +77,8 @@
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a>
 
                 @if ((await AuthorizationService.AuthorizeAsync(
-     User, item,
-     TicketOperations.Delete)).Succeeded)
+  User, item,
+  TicketOperations.Delete)).Succeeded)
                 {
                     <text> | </text>
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

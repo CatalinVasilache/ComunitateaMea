@@ -44,6 +44,12 @@
             @Html.DisplayFor(model => model.StatusApproval)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.County)
         </dt>
         <dd class="col-sm-10">
@@ -51,38 +57,133 @@
         </dd>
     </dl>
 </div>
-@if (Model.StatusApproval != TicketStatusApproval.Approved)
-{
-    @if ((await AuthorizationService.AuthorizeAsync(
-User, Model, TicketOperations.Approve)).Succeeded)
-    {
-        <form style="display:inline;" method="post">
-            <input type="hidden" name="id" value="@Model.Id" />
-            <input type="hidden" name="status" value="@TicketStatusApproval.Approved" />
-            <button type="submit" class="btn btn-xs btn-success">Approve</button>
-        </form>
-    }
-}
 
-@if (Model.StatusApproval != TicketStatusApproval.Rejected)
+@if (Model.StatusApproval == TicketStatusApproval.Approved)
+    @if (Model.Status == TicketStatus.Todo)
+    {
+        @if ((await AuthorizationService.AuthorizeAsync(
+   User, Model, TicketOperations.InProgress)).Succeeded)
+@if ((await AuthorizationService.AuthorizeAsync(
+User, Model, TicketOperations.Done)).Succeeded)
+@if ((await AuthorizationService.AuthorizeAsync(
+User, Model, TicketOperations.NotPossible)).Succeeded)
 {
+    <form style="display:inline;" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="statusProgress" value="@TicketStatus.InProgress" />
+        <button type="submit" class="btn btn-xs btn-warning">In Progress</button>
+    </form>
+    <form style="display:inline;" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="statusProgress" value="@TicketStatus.Done" />
+        <button type="submit" class="btn btn-xs btn-warning">Done</button>
+    </form>
+    <form style="display:inline;" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="statusProgress" value="@TicketStatus.NotPossible" />
+        <button type="submit" class="btn btn-xs btn-warning">Not Possible</button>
+    </form>
+}
+}
+    <br />
+    @if (Model.StatusApproval == TicketStatusApproval.Approved)
+        @if (Model.Status == TicketStatus.InProgress)
+        {
+
+            @if ((await AuthorizationService.AuthorizeAsync(
+      User, Model, TicketOperations.Done)).Succeeded)
     @if ((await AuthorizationService.AuthorizeAsync(
-User, Model, TicketOperations.Reject)).Succeeded)
+   User, Model, TicketOperations.NotPossible)).Succeeded)
     {
         <form style="display:inline;" method="post">
             <input type="hidden" name="id" value="@Model.Id" />
-            <input type="hidden" name="status" value="@TicketStatusApproval.Rejected" />
-            <button type="submit" class="btn btn-xs btn-danger">Reject</button>
+            <input type="hidden" name="statusProgress" value="@TicketStatus.Done" />
+            <button type="submit" class="btn btn-xs btn-warning">Done</button>
+        </form>
+        <form style="display:inline;" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" name="statusProgress" value="@TicketStatus.NotPossible" />
+            <button type="submit" class="btn btn-xs btn-warning">Not Possible</button>
         </form>
     }
 }
-<div>
-    @if ((await AuthorizationService.AuthorizeAsync(
-    User, Model,
-    TicketOperations.Update)).Succeeded)
-    {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
-        <text> | </text>
+        <br />
+        @if (Model.StatusApproval == TicketStatusApproval.Approved)
+            @if (Model.Status == TicketStatus.Done)
+            {
+                @if ((await AuthorizationService.AuthorizeAsync(
+           User, Model, TicketOperations.InProgress)).Succeeded)
+        @if ((await AuthorizationService.AuthorizeAsync(
+     User, Model, TicketOperations.NotPossible)).Succeeded)
+        {
+            <form style="display:inline;" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="statusProgress" value="@TicketStatus.InProgress" />
+                <button type="submit" class="btn btn-xs btn-warning">In Progress</button>
+            </form>
+            <form style="display:inline;" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="statusProgress" value="@TicketStatus.NotPossible" />
+                <button type="submit" class="btn btn-xs btn-warning">Not Possible</button>
+            </form>
+        }
     }
-    <a asp-action="Index">Back to List</a>
-</div>
+            <br />
+            @if (Model.StatusApproval == TicketStatusApproval.Approved)
+                @if (Model.Status == TicketStatus.NotPossible)
+                {
+                    @if ((await AuthorizationService.AuthorizeAsync(
+               User, Model, TicketOperations.InProgress)).Succeeded)
+            @if ((await AuthorizationService.AuthorizeAsync(
+        User, Model, TicketOperations.Done)).Succeeded)
+            {
+                <form style="display:inline;" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="status" value="@TicketStatus.InProgress" />
+                    <button type="submit" class="btn btn-xs btn-warning">In Progress</button>
+                </form>
+                <form style="display:inline;" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="status" value="@TicketStatus.Done" />
+                    <button type="submit" class="btn btn-xs btn-warning">Done</button>
+                </form>
+            }
+        }
+                <br />
+
+                @if (Model.StatusApproval != TicketStatusApproval.Rejected)
+                {
+                    @if ((await AuthorizationService.AuthorizeAsync(
+            User, Model, TicketOperations.Reject)).Succeeded)
+                    {
+                        <form style="display:inline;" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@TicketStatusApproval.Rejected" />
+                            <button type="submit" class="btn btn-xs btn-danger">Reject</button>
+                        </form>
+                    }
+                }
+
+                @if (Model.StatusApproval != TicketStatusApproval.Approved)
+                {
+                    @if ((await AuthorizationService.AuthorizeAsync(
+            User, Model, TicketOperations.Approve)).Succeeded)
+                    {
+                        <form style="display:inline;" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@TicketStatusApproval.Approved" />
+                            <button type="submit" class="btn btn-xs btn-success">Approve</button>
+                        </form>
+                    }
+                }
+
+                <div>
+                    @if ((await AuthorizationService.AuthorizeAsync(
+            User, Model,
+            TicketOperations.Update)).Succeeded)
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                        <text> | </text>
+                    }
+                    <a asp-action="Index">Back to List</a>
+                </div>

@@ -1,0 +1,56 @@
+﻿@model ComunitateaMea.Models.Ticket
+
+@{
+    ViewData["Title"] = "Vote";
+}
+
+<h1>Vote</h1>
+
+<h3>Are you sure you want to vote this?</h3>
+<div>
+    <h4>Ticket</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PublishedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PublishedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Votes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Votes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StatusApproval)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StatusApproval)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.County)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.County)
+        </dd>
+    </dl>
+        <form asp-action="Vote">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Vote" class="btn btn-outline-primary" /> |
+            <a asp-action="Index">Back to List</a>
+        </form>
+</div>
