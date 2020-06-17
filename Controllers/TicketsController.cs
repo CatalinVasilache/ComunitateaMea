@@ -14,7 +14,10 @@ using ComunitateaMea.Extensions;
 using System.Diagnostics;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 //using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace ComunitateaMea.Controllers
 {
@@ -23,17 +26,20 @@ namespace ComunitateaMea.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IAuthorizationService _authorizationService;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
 
         public TicketsController(
             ApplicationDbContext context, 
             IAuthorizationService authorizationService, 
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager,
+            IWebHostEnvironment hostEnvironment)
             : base()
         {
             _context = context;
             _authorizationService = authorizationService;
             _userManager = userManager;
+            this._hostEnvironment = hostEnvironment;
         }
 
         public Ticket Ticket { get; set; }
@@ -148,7 +154,7 @@ namespace ComunitateaMea.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description")] Ticket ticket, IFormFile file)
+        public async Task<IActionResult> Create([Bind("Title,Description,Type,ImageFile")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
@@ -159,6 +165,20 @@ namespace ComunitateaMea.Controllers
                 ticket.Status = TicketStatus.Todo;
                 ticket.OwnerId = _userManager.GetUserId(User);
                 ticket.County = User.GetCounty();
+
+                //save image tp wwwroot/image
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(ticket.ImageFile.FileName);
+                string extension = Path.GetExtension(ticket.ImageFile.FileName);
+                fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                ticket.ImageName = fileName;
+                string path = Path.Combine(wwwRootPath + "/Image/", fileName);
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await ticket.ImageFile.CopyToAsync(fileStream);
+                }
+                //Insert record
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

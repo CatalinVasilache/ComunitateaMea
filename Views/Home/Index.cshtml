@@ -1,14 +1,36 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@using ComunitateaMea.Extensions
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Hello!</h1>
-    <p>Bine ai venit in Comunitatea Mea!</p>
+    <div class="row">
+        <div class="home-text">
+            <h3>Bine ai venit in ComunitateaMea,</h3>
+            <h2>@User.GetFullName()</h2>
+        </div>
+        <div class="hero-img">
+            <img src="~/assets/hero.svg" width="730px" height="409px" />
+        </div>
+    </div>
 </div>
 
 <style>
-    .text-center {
-        color: red;
+    .hero-img {
+        align-content: flex-end;
+    }
+
+    .home-text {
+        margin-top: 10%;
+    }
+
+    .row {
+        justify-content: space-between;
+        margin: 0;
+        margin-top: 10%;
     }
 </style>

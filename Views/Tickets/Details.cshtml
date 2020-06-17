@@ -55,6 +55,22 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.County)
         </dd>
+        <dt class="col-sm-2">
+            @if (Model.ImageName != null)
+            {
+                <text>Uploaded Image</text>
+            }
+            else
+            {
+                <text>No images available</text>
+            }
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.ImageName != null)
+            {
+                <img class="lazyload" src="@("~/image/" + Model.ImageName)" asp-append-version="true" width="250px" height="250px" />
+            }
+        </dd>
     </dl>
 </div>
 

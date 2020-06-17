@@ -11,80 +11,323 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PublishedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Votes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StatusApproval)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.County)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublishedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Votes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StatusApproval)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.County)
-            </td>
-            <td>
-                <a asp-action="Vote" asp-route-id="@item.Id">Vote</a>
-                |
-                @if ((await AuthorizationService.AuthorizeAsync(
-  User, item,
-  TicketOperations.Update)).Succeeded)
-                {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <text> | </text>
-                }
 
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+<div class="container-tickets">
+    <div class="row">
+        <div class="col-lg-4">
+            <div>
+                <h1>Matters</h1>
+            </div>
+            @foreach (var item in Model.Where(c => c.Type == TicketType.Idea && c.Status != TicketStatus.Done))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
+                        <h4>Publish date: @Html.DisplayFor(modelItem => item.PublishedDate)</h4>
+                        <a asp-action="Vote" asp-route-id="@item.Id">Vote</a>
+                        |
+                        @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Update)).Succeeded)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <text> | </text>
+                        }
 
-                @if ((await AuthorizationService.AuthorizeAsync(
-  User, item,
-  TicketOperations.Delete)).Succeeded)
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+                        @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Delete)).Succeeded)
+                        {
+                            <text> | </text>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </div>
+                    <div class="card-block">
+                        <div class="row">
+                            <div>
+                                <p>@Html.DisplayFor(modelItem => item.Description)</p>
+                            </div>
+                            <div>
+                                @if (item.ImageName != null)
+                                {
+                                    <picture>
+                                        <img class="lazyload" src="@("~/image/" + item.ImageName)" asp-append-version="true" width="100px" height="100px" />
+                                    </picture>
+                                }
+                                else
+                                {
+                                    <text>No image available</text>
+                                }
+                                <div>
+                                    <div>
+                                        <h1>Votes: @Html.DisplayFor(modelItem => item.Votes)</h1>
+                                    </div>
+                                    <div>
+                                        <h1>Status: @Html.DisplayFor(modelItem => item.Status)</h1>
+                                    </div>
+                                    @if (!(item.StatusApproval == TicketStatusApproval.Approved))
+                                    {
+                                        <div>
+                                            <h1>Status: @Html.DisplayFor(modelItem => item.StatusApproval)</h1>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            }
+        </div>
+        <div class="col-lg-4">
+            <div>
+                <h1>Matters</h1>
+            </div>
+            @foreach (var item in Model.Where(c => c.Type == TicketType.Matter && c.Status != TicketStatus.Done))
+            {
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
+                        <h4>Publish date: @Html.DisplayFor(modelItem => item.PublishedDate)</h4>
+                        <a asp-action="Vote" asp-route-id="@item.Id">Vote</a>
+                        |
+                        @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Update)).Succeeded)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <text> | </text>
+                        }
+
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+                        @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Delete)).Succeeded)
+                        {
+                            <text> | </text>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </div>
+                    <div class="card-block">
+                        <div class="row">
+                            <div>
+                                <p>@Html.DisplayFor(modelItem => item.Description)</p>
+                            </div>
+                            <div>
+                                @if (item.ImageName != null)
+                                {
+                                    <picture>
+                                        <img class="lazyload" src="@("~/image/" + item.ImageName)" asp-append-version="true" width="100px" height="100px" />
+                                    </picture>
+                                }
+                                else
+                                {
+                                    <text>No image available</text>
+                                }
+                                <div class="row card card-outline-primary m-x-auto m-b-2">
+                                    <div>
+                                        <h1>Votes: @Html.DisplayFor(modelItem => item.Votes)</h1>
+                                    </div>
+                                    <div>
+                                        <h1>Status: @Html.DisplayFor(modelItem => item.Status)</h1>
+                                    </div>
+                                    @if (!(item.StatusApproval == TicketStatusApproval.Approved))
+                                    {
+                                        <div>
+                                            <h1>Status: @Html.DisplayFor(modelItem => item.StatusApproval)</h1>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+            }
+        </div>
+        <div class="col-lg-4">
+            <div>
+                <h1>Matters</h1>
+            </div>
+            @foreach (var item in Model.Where(c => c.Status == TicketStatus.Done))
+            {
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
+                        <h4>Publish date: @Html.DisplayFor(modelItem => item.PublishedDate)</h4>
+                        <a asp-action="Vote" asp-route-id="@item.Id">Vote</a>
+                        |
+                        @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Update)).Succeeded)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <text> | </text>
+                        }
+
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+                        @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Delete)).Succeeded)
+                        {
+                            <text> | </text>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </div>
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-lg-6 tags p-b-2">
+                                <p>@Html.DisplayFor(modelItem => item.Description)</p>
+                            </div>
+                            <div class="col-lg-4 offset-lg-1">
+                                @if (item.ImageName != null)
+                                {
+                                    <picture>
+                                        <img class="lazyload" src="@("~/image/" + item.ImageName)" asp-append-version="true" width="100px" height="100px" />
+                                    </picture>
+                                }
+                                else
+                                {
+                                    <text>No image available</text>
+                                }
+                                <div class="row card card-outline-primary m-x-auto m-b-2">
+                                    <div>
+                                        <h1>Votes: @Html.DisplayFor(modelItem => item.Votes)</h1>
+                                    </div>
+                                    <div>
+                                        <h1>Status: @Html.DisplayFor(modelItem => item.Status)</h1>
+                                    </div>
+                                    @if (!(item.StatusApproval == TicketStatusApproval.Approved))
+                                    {
+                                        <div>
+                                            <h1>Status: @Html.DisplayFor(modelItem => item.StatusApproval)</h1>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+            }
+        </div>
+    </div>
+   </div>
+
+<style>
+    .container-tickets {
+        width: 100%;
+        margin: 0;
+        max-width: 100%;
+        font-family: Grad, serif;
+        position: absolute;
+    }
+</style>
+
+    @*<table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PublishedDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Votes)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.StatusApproval)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.County)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ImageName)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
                 {
-                    <text> | </text>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PublishedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Votes)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StatusApproval)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.County)
+                    </td>
+                    <td>
+                        @if (item.ImageName != null)
+                        {
+                            <img class="lazyload" src="@("~/image/" + item.ImageName)" asp-append-version="true" width="100px" height="100px" />
+                        }
+                        else
+                        {
+                            <text>No image available</text>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Vote" asp-route-id="@item.Id">Vote</a>
+                        |
+                        @if ((await AuthorizationService.AuthorizeAsync(
+        User, item,
+        TicketOperations.Update)).Succeeded)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <text> | </text>
+                        }
+
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+                        @if ((await AuthorizationService.AuthorizeAsync(
+        User, item,
+        TicketOperations.Delete)).Succeeded)
+                        {
+                            <text> | </text>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                    </td>
+                </tr>
                 }
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+            </tbody>
+        </table>*@
