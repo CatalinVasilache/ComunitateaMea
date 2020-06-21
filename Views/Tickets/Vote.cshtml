@@ -4,53 +4,74 @@
     ViewData["Title"] = "Vote";
 }
 
-<h1>Vote</h1>
-
-<h3>Are you sure you want to vote this?</h3>
-<div>
-    <h4>Ticket</h4>
+<h4 style="margin-bottom: 15px; color: #1f6c5d;">Inainte de a vota, asigura-te ca ai parcurs tot tichetul</h4>
+<div style="font-size: 20px; font-weight: 400; color: #1f6c5d; margin-top: 15px;">
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PublishedDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PublishedDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Votes)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Votes)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StatusApproval)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StatusApproval)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.County)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.County)
-        </dd>
-    </dl>
+    <div class="row" style="margin: 0; margin-top: 20px;">
+        <dl class="row" style="width:64%;">
+            <dt class="col-sm-2">
+                <strong>Titlu:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Descriere:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Comunitate:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.County)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Situatie:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Status)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Voturi:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Votes)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Data publicarii:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.PublishedDate)
+            </dd>
+        </dl>
+        <div>
+            <dd class="col-sm-10">
+                @if (Model.ImageName != null)
+                {
+                    <img class="lazyload img1" src="@("~/image/" + Model.ImageName)" asp-append-version="true"/>
+                }
+            </dd>
+        </div>
+    </div>
         <form asp-action="Vote">
             <input type="hidden" asp-for="Id" />
-            <input type="submit" value="Vote" class="btn btn-outline-primary" /> |
-            <a asp-action="Index">Back to List</a>
+            <input type="submit" value="Voteaza" class="btn btn-primary vote-btn" /> |
+            <a asp-action="Index">Intoarce-te la lista</a>
         </form>
 </div>
+
+<style>
+    .img1 {
+        max-height: 500px;
+        max-width: 500px;
+    }
+
+    .vote-btn {
+        color: #134b40;
+        border-color: #134b40;
+        font-weight: 500;
+    }
+
+</style>

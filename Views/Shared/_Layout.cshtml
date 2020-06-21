@@ -1,42 +1,55 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@using ComunitateaMea.Extensions
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ComunitateaMea</title>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 
 </head>
 
 <body>
-    
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light mb-3" style="margin-top: 50px; font-weight: bold">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light mb-3" style="margin-top: 50px; font-weight: bold; padding: 0; font-size: 17px">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-size: 40px; margin-right: 37%;"><strong>ComunitateaMea</strong></a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-size: 40px; margin-right: 25%;">
+                    <div style="flex-direction: row; font-weight: bold">
+                        ComunitateaMea
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <strong style="color:#7FBC4E; font-size: 45px">@User.GetCounty()</strong>
+                        }
+                    </div>
+                    </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
-                    <ul class="navbar-nav flex-grow-1" style="align-items: center">
+                    <ul class="navbar-nav flex-grow-1" style="align-items: center; justify-content: space-evenly">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Acasa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Cum facem</a>
+                            <a class="nav-link text-dark text-decoration-lines" asp-area="" asp-controller="Home" asp-action="Privacy">Cum facem</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Tickets" asp-action="Index">Tichete</a>
                         </li>
-                        @if(User.IsInRole("TicketAdministrators"))
+                        @if (User.IsInRole("TicketAdministrators"))
                         {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Index">Roluri</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Index">Roluri</a>
+                            </li>
                         }
                     </ul>
                 </div>
@@ -49,11 +62,24 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted footer">
-        <div class="container" style="color: #f5f5f5">
+    @*<footer class="border-top footer text-muted footer fixed-bottom" style="height: 100px">
+            <div class="container" style="color: #f5f5f5">
+                &copy; 2020 - ComunitateaMea - <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #f5f5f5; opacity: 0.7;">Termeni</a>
+            </div>
+        </footer>*@
+
+    <!-- Footer -->
+    <footer class="page-footer font-small teal footer fixed-bottom">
+        <!-- Footer Text -->
+        <!-- Copyright -->
+        <div class="footer-copyright text-center py-3">
             &copy; 2020 - ComunitateaMea - <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #f5f5f5; opacity: 0.7;">Termeni</a>
         </div>
+        <!-- Copyright -->
+
     </footer>
+    <!-- Footer -->
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -64,5 +90,19 @@
 <style>
     .footer {
         background-color: #425e5e;
+        color: #f5f5f5;
+        box-shadow: 0px 5px 10px 4px #425e5e;
+    }
+
+    body {
+        font-family: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .navbar-collapse {
+        font-size: 18px;
+    }
+
+    .navbar-light {
+        color: black;
     }
 </style>

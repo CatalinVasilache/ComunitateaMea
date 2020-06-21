@@ -20,6 +20,30 @@
     color: #ffffff;
 }
 
+@media (min-width: 576px) {
+    .container {
+        max-width: 990px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 1170px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 1410px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1590px;
+    }
+}
+
 a:focus,
 button:focus {
     outline: none !important;
@@ -117,9 +141,8 @@ body {
     line-height: 1.66667;
     font-weight: 300;
     color: #333;
-    background-image: url(~/assets/background-top.svg);
+    background-image: url("../../../../assets/background-top.svg");
     background-repeat: no-repeat;
-    background-size: cover;
     letter-spacing: -0.03em;
     -webkit-text-size-adjust: none;
     -webkit-font-smoothing: subpixel-antialiased;

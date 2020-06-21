@@ -3,45 +3,43 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Ticket</h4>
+<h3 style="margin-bottom: 15px;">Creeaza un tichet nou</h3>
 <hr />
-<div class="row">
+<div class="row" style="font-size: 2rem; font-weight: 400; color: #1f6c5d;">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" required />
+                <label asp-for="Title" class="control-label">Titlu</label>
+                <input asp-for="Title" class="form-control" style="color: #379683; border-width: 2px; border-color: #379683" required />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" required />
+                <label asp-for="Description" class="control-label">Descriere</label>
+                <input asp-for="Description" class="form-control" style="color: #379683; border-width: 2px; border-color: #379683" required />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Type"></label>
-                <select asp-for="Type" class="form-control" asp-items="@new SelectList(Enum.GetNames(typeof(TicketType)))">
-                    <option selected disabled value="Select">Select the type of your ticket</option>
+                <label asp-for="Type">Categorie</label>
+                <select asp-for="Type" class="form-control" style="color: #379683; border-width: 2px; border-color: #379683" asp-items="@new SelectList(Enum.GetNames(typeof(TicketType)))">
+                    <option selected disabled value="Select">Alege categoria tichetului</option>
                 </select>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageFile" class="control-label"></label>
-                <input asp-for="ImageFile" accept="image/*" required />
+                <label asp-for="ImageFile" class="control-label">Imagine</label>
+                <input asp-for="ImageFile" style="color: #379683; border-width: 2px; border-color: #379683" accept="image/*" />
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Creeaza" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Intoarce-te la lista</a>
 </div>
 
 @section Scripts {

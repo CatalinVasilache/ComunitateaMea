@@ -7,78 +7,65 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h3 style="margin-bottom: 15px; color: #1f6c5d;">Detalii</h3>
 
-<div>
-    <h4>Ticket</h4>
+<div style="font-size: 20px; font-weight: 400; color: #1f6c5d; margin-top: 15px;">
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PublishedDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PublishedDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Votes)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Votes)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StatusApproval)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StatusApproval)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.County)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.County)
-        </dd>
-        <dt class="col-sm-2">
-            @if (Model.ImageName != null)
-            {
-                <text>Uploaded Image</text>
-            }
-            else
-            {
-                <text>No images available</text>
-            }
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.ImageName != null)
-            {
-                <img class="lazyload" src="@("~/image/" + Model.ImageName)" asp-append-version="true" width="250px" height="250px" />
-            }
-        </dd>
-    </dl>
+    <div class="row" style="margin: 0; margin-top: 20px;">
+        <dl class="row" style="width: 64%;">
+            <dt class="col-sm-2">
+                <strong>Titlu:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Descriere:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Comunitate:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.County)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Situatie:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Status)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Voturi:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Votes)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Data publicarii:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.PublishedDate)
+            </dd>
+        </dl>
+        <div>
+            <dd class="col-sm-10">
+                @if (Model.ImageName != null)
+                {
+                    <img class="lazyload img1" src="@("~/image/" + Model.ImageName)" asp-append-version="true" />
+                }
+            </dd>
+        </div>
+    </div>
 </div>
 
 @if (Model.StatusApproval == TicketStatusApproval.Approved)
     @if (Model.Status == TicketStatus.Todo)
     {
         @if ((await AuthorizationService.AuthorizeAsync(
-   User, Model, TicketOperations.InProgress)).Succeeded)
+User, Model, TicketOperations.InProgress)).Succeeded)
 @if ((await AuthorizationService.AuthorizeAsync(
 User, Model, TicketOperations.Done)).Succeeded)
 @if ((await AuthorizationService.AuthorizeAsync(
@@ -87,95 +74,99 @@ User, Model, TicketOperations.NotPossible)).Succeeded)
     <form style="display:inline;" method="post">
         <input type="hidden" name="id" value="@Model.Id" />
         <input type="hidden" name="statusProgress" value="@TicketStatus.InProgress" />
-        <button type="submit" class="btn btn-xs btn-warning">In Progress</button>
+        <button style="color: white; background-color: #5CDB95; border-color:#5CDB95;" type="submit" class="btn btn-xs btn-warning">In Lucru</button>
     </form>
     <form style="display:inline;" method="post">
         <input type="hidden" name="id" value="@Model.Id" />
         <input type="hidden" name="statusProgress" value="@TicketStatus.Done" />
-        <button type="submit" class="btn btn-xs btn-warning">Done</button>
+        <button style="color: white; background-color: #379683; border-color:#379683;" type="submit" class="btn btn-xs btn-warning">Finalizat</button>
     </form>
     <form style="display:inline;" method="post">
         <input type="hidden" name="id" value="@Model.Id" />
         <input type="hidden" name="statusProgress" value="@TicketStatus.NotPossible" />
-        <button type="submit" class="btn btn-xs btn-warning">Not Possible</button>
+        <button style="color: white; background-color: #05386b; border-color:#05386b;" type="submit" class="btn btn-xs btn-warning">Imposibil</button>
     </form>
-}
-}
     <br />
+}
+}
+
     @if (Model.StatusApproval == TicketStatusApproval.Approved)
         @if (Model.Status == TicketStatus.InProgress)
         {
 
             @if ((await AuthorizationService.AuthorizeAsync(
-      User, Model, TicketOperations.Done)).Succeeded)
-    @if ((await AuthorizationService.AuthorizeAsync(
-   User, Model, TicketOperations.NotPossible)).Succeeded)
-    {
-        <form style="display:inline;" method="post">
-            <input type="hidden" name="id" value="@Model.Id" />
-            <input type="hidden" name="statusProgress" value="@TicketStatus.Done" />
-            <button type="submit" class="btn btn-xs btn-warning">Done</button>
-        </form>
-        <form style="display:inline;" method="post">
-            <input type="hidden" name="id" value="@Model.Id" />
-            <input type="hidden" name="statusProgress" value="@TicketStatus.NotPossible" />
-            <button type="submit" class="btn btn-xs btn-warning">Not Possible</button>
-        </form>
-    }
+ User, Model, TicketOperations.Done)).Succeeded)
+@if ((await AuthorizationService.AuthorizeAsync(
+User, Model, TicketOperations.NotPossible)).Succeeded)
+{
+    <form style="display:inline;" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="statusProgress" value="@TicketStatus.Done" />
+        <button style="color: white; background-color: #379683; border-color:#379683;" type="submit" class="btn btn-xs btn-warning">Finalizat</button>
+    </form>
+    <form style="display:inline;" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="statusProgress" value="@TicketStatus.NotPossible" />
+        <button style="color: white; background-color: #05386b; border-color:#05386b;" type="submit" class="btn btn-xs btn-warning">Imposibil</button>
+    </form>
+    <br />
 }
-        <br />
+}
+
         @if (Model.StatusApproval == TicketStatusApproval.Approved)
             @if (Model.Status == TicketStatus.Done)
             {
                 @if ((await AuthorizationService.AuthorizeAsync(
-           User, Model, TicketOperations.InProgress)).Succeeded)
-        @if ((await AuthorizationService.AuthorizeAsync(
-     User, Model, TicketOperations.NotPossible)).Succeeded)
-        {
-            <form style="display:inline;" method="post">
-                <input type="hidden" name="id" value="@Model.Id" />
-                <input type="hidden" name="statusProgress" value="@TicketStatus.InProgress" />
-                <button type="submit" class="btn btn-xs btn-warning">In Progress</button>
-            </form>
-            <form style="display:inline;" method="post">
-                <input type="hidden" name="id" value="@Model.Id" />
-                <input type="hidden" name="statusProgress" value="@TicketStatus.NotPossible" />
-                <button type="submit" class="btn btn-xs btn-warning">Not Possible</button>
-            </form>
-        }
+      User, Model, TicketOperations.InProgress)).Succeeded)
+    @if ((await AuthorizationService.AuthorizeAsync(
+User, Model, TicketOperations.NotPossible)).Succeeded)
+    {
+        <form style="display:inline;" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" name="statusProgress" value="@TicketStatus.InProgress" />
+            <button style="color: white; background-color: #5CDB95; border-color:#5CDB95;" type="submit" class="btn btn-xs btn-warning">In Lucru</button>
+        </form>
+        <form style="display:inline;" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" name="statusProgress" value="@TicketStatus.NotPossible" />
+            <button style="color: white; background-color: #05386b; border-color:#05386b;" type="submit" class="btn btn-xs btn-warning">Imposibil</button>
+        </form>
+        <br />
     }
-            <br />
+}
+
             @if (Model.StatusApproval == TicketStatusApproval.Approved)
                 @if (Model.Status == TicketStatus.NotPossible)
                 {
                     @if ((await AuthorizationService.AuthorizeAsync(
-               User, Model, TicketOperations.InProgress)).Succeeded)
-            @if ((await AuthorizationService.AuthorizeAsync(
-        User, Model, TicketOperations.Done)).Succeeded)
-            {
-                <form style="display:inline;" method="post">
-                    <input type="hidden" name="id" value="@Model.Id" />
-                    <input type="hidden" name="status" value="@TicketStatus.InProgress" />
-                    <button type="submit" class="btn btn-xs btn-warning">In Progress</button>
-                </form>
-                <form style="display:inline;" method="post">
-                    <input type="hidden" name="id" value="@Model.Id" />
-                    <input type="hidden" name="status" value="@TicketStatus.Done" />
-                    <button type="submit" class="btn btn-xs btn-warning">Done</button>
-                </form>
-            }
+          User, Model, TicketOperations.InProgress)).Succeeded)
+        @if ((await AuthorizationService.AuthorizeAsync(
+User, Model, TicketOperations.Done)).Succeeded)
+        {
+            <form style="display:inline;" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="status" value="@TicketStatus.InProgress" />
+                <button style="color: white; background-color: #5CDB95; border-color: #5CD895" type="submit" class="btn btn-xs btn-warning">In Lucru</button>
+            </form>
+            <form style="display:inline;" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="status" value="@TicketStatus.Done" />
+                <button style="color: white; background-color: #379683; border-color: #379683;" type="submit" class="btn btn-xs btn-warning">Finalizat</button>
+            </form>
+            <br />
         }
-                <br />
+    }
+<br />
 
                 @if (Model.StatusApproval != TicketStatusApproval.Rejected)
                 {
                     @if ((await AuthorizationService.AuthorizeAsync(
-            User, Model, TicketOperations.Reject)).Succeeded)
+       User, Model, TicketOperations.Reject)).Succeeded)
                     {
                         <form style="display:inline;" method="post">
                             <input type="hidden" name="id" value="@Model.Id" />
                             <input type="hidden" name="status" value="@TicketStatusApproval.Rejected" />
-                            <button type="submit" class="btn btn-xs btn-danger">Reject</button>
+                            <button type="submit" class="btn btn-xs btn-danger">Respinge</button>
                         </form>
                     }
                 }
@@ -183,23 +174,32 @@ User, Model, TicketOperations.NotPossible)).Succeeded)
                 @if (Model.StatusApproval != TicketStatusApproval.Approved)
                 {
                     @if ((await AuthorizationService.AuthorizeAsync(
-            User, Model, TicketOperations.Approve)).Succeeded)
+       User, Model, TicketOperations.Approve)).Succeeded)
                     {
+                        <br />
                         <form style="display:inline;" method="post">
                             <input type="hidden" name="id" value="@Model.Id" />
                             <input type="hidden" name="status" value="@TicketStatusApproval.Approved" />
-                            <button type="submit" class="btn btn-xs btn-success">Approve</button>
+                            <button type="submit" class="btn btn-xs btn-success">Accepta</button>
                         </form>
+                        <br />
                     }
                 }
-
+<br />
                 <div>
                     @if ((await AuthorizationService.AuthorizeAsync(
-            User, Model,
-            TicketOperations.Update)).Succeeded)
+User, Model,
+TicketOperations.Update)).Succeeded)
                     {
-                        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@Model.Id">Editeaza</a>
                         <text> | </text>
                     }
-                    <a asp-action="Index">Back to List</a>
+                    <a asp-action="Index">Intoarce-te la lista</a>
                 </div>
+
+                <style>
+                    .img1 {
+                        max-height: 500px;
+                        max-width: 500px;
+                    }
+                </style>
