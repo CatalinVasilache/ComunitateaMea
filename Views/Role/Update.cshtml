@@ -3,53 +3,90 @@
     ViewData["Title"] = "Update";
 }
 
-<h1 class="bg-info text-white">Update Role</h1>
-<a asp-action="Index" class="btn btn-secondary">Back</a>
-<div asp-validation-summary="All" class="text-danger"></div>
+<div>
+    <div asp-validation-summary="All" class="text-danger"></div>
 
-<form method="post">
-    <input type="hidden" name="roleName" value="@Model.Role.Name" />
-    <input type="hidden" name="roleId" value="@Model.Role.Id" />
+    <form method="post">
+        <input type="hidden" name="roleName" value="@Model.Role.Name" />
+        <input type="hidden" name="roleId" value="@Model.Role.Id" />
+        <div class="row" style="margin: 0; justify-content: space-between;">
+            <table id="dataTable" class="table table-sm table-hover" style="font-size: 1rem; font-weight: 500; color: #1f6c5d; width: 48%;" cellspacing="0">
+                <thead class="thead-dark">
+                    <tr><th style="padding: 2%;">Adauga utilizatori in @Model.Role.Name</th></tr>
+                </thead>
+                @if (Model.NonMembers.Count() == 0)
+                {
+                    <tr><td colspan="2">Toti utilizatorii sunt membri</td></tr>
+                }
+                else
+                {
+                    @foreach (IdentityUser user in Model.NonMembers)
+                    {
+                        <tr>
+                            <td style="padding: 2%;">@user.UserName</td>
+                            <td style="text-align:center; vertical-align: middle; padding-top: 1.5%;">
+                                <input style="width: 20px; height: 20px;" type="checkbox" name="AddIds" value="@user.Id">
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
 
-    <h2 class="bg-info p-1 text-white">Add To @Model.Role.Name</h2>
-    <table class="table table-bordered table-sm">
-        @if (Model.NonMembers.Count() == 0)
-        {
-            <tr><td colspan="2">All Users Are Members</td></tr>
-        }
-        else
-        {
-            @foreach (IdentityUser user in Model.NonMembers)
-            {
-                <tr>
-                    <td>@user.UserName</td>
-                    <td>
-                        <input type="checkbox" name="AddIds" value="@user.Id">
-                    </td>
-                </tr>
-            }
-        }
-    </table>
+            <table id="tableId" class="table table-sm table-hover" style="font-size: 1rem; font-weight: 500; color: #134b40; width: 48%;" cellspacing="0">
+                <thead class="thead-dark">
+                    <tr><th style="padding: 2%;">Sterge utilizatori din @Model.Role.Name</th></tr>
+                </thead>
+                @if (Model.Members.Count() == 0)
+                {
+                    <tr><td colspan="2">Niciun utilizator nu este membru</td></tr>
+                }
+                else
+                {
+                    @foreach (IdentityUser user in Model.Members)
+                    {
+                        <tr>
+                            <td style="padding: 2%;">@user.UserName</td>
+                            <td style="text-align:center; vertical-align: middle; padding-top: 1.5%;">
+                                <input style="width: 20px; height: 20px;" type="checkbox" name="DeleteIds" value="@user.Id">
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+        <button type="submit" class="btn btn-primary">Salveaza</button>
+        <a style="color: #1f6c5d; border-color: #1f6c5d;" asp-action="Index" class="btn btn-outline-primary">Inapoi</a>
+    </form>
+</div>
 
-    <h2 class="bg-info p-1 text-white">Remove From @Model.Role.Name</h2>
-    <table class="table table-bordered table-sm">
-        @if (Model.Members.Count() == 0)
-        {
-            <tr><td colspan="2">No Users Are Members</td></tr>
+<style>
+    .table {
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: #134b40;
+        border-color: #1f6c5d;
+        border-width: 1px;
+        box-shadow: 0px 0px 5px 0px #1f6c5d;
+        opacity: 90%;
+    }
+
+    .table-bordered {
+        border: 2px solid #1f6c5d;
+    }
+
+        .table-bordered th {
+            border: 2px solid #1f6c5d;
         }
-        else
-        {
-            @foreach (IdentityUser user in Model.Members)
-            {
-                <tr>
-                    <td>@user.UserName</td>
-                    <td>
-                        <input type="checkbox" name="DeleteIds" value="@user.Id">
-                    </td>
-                </tr>
-            }
+
+        .table-bordered td {
+            border: 2px solid #1f6c5d;
         }
-    </table>
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#tableId').DataTable();
+        $('.dataTables_length').addClass('bs-select');
+    });
+</script>
 

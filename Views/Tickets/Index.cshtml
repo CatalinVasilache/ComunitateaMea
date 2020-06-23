@@ -6,77 +6,583 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h3 style="text-align: center; color: black; opacity: 70%;">Tichetele comunitatii tale</h3>
 
-<p>
-    <a asp-action="Create">Create New</a>
+<p style="text-align: center; font-size: 25px; font-weight: 400;">
+    <a class="add-new" asp-action="Create">Creeaza un tichet +</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PublishedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Votes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StatusApproval)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.County)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+
+<div class="container-tickets">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="non-semantic-protector">
+                <h1 class="ribbon1">
+                    <span class="ribbon1-content">Idei</span>
+                </h1>
+            </div>
+                @foreach (var item in Model.Where(c => c.Type == TicketType.Idea && c.Status != TicketStatus.Done))
+                {
+        <div class="card card-1">
+            <div class="card-header">
+                <div class="row" style="justify-content:space-between; margin: 0;">
+                    <div style="text-align: left;">
+                        <h3 class="title-card" style="color: #29734a">@Html.DisplayFor(modelItem => item.Title)</h3>
+                        <h6 style="color: #29734a; opacity: 70%;">@Html.DisplayFor(modelItem => item.PublishedDate)</h6>
+                    </div>
+                    <div style="text-align: right;">
+                        <a class="link-style1" style="margin-bottom: 10%;" asp-action="Vote" asp-route-id="@item.Id">Voteaza</a>
+                        <h6 style="color: #29734a; opacity: 80%;">Voturi: @Html.DisplayFor(modelItem => item.Votes)</h6>
+                    </div>
+                </div>
+                @*@Html.DisplayFor(modelItem => item.Type)*@
+            </div>
+            <div class="card-block" style="padding: .75rem 1.25rem; height: 100%;">
+                <div style="height: 100%;">
+                    <div style="height: 100px; overflow: hidden;">
+                        <p style="color: #29734a; opacity: 75%; font-weight: 500;">@Html.DisplayFor(modelItem => item.Description)</p>
+                    </div>
+                    <div style="border-top: 1px solid rgba(0,0,0,.125); justify-content: space-between; margin:0; padding-top: 10px;" class="row">
+                        @*@if (item.ImageName != null)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublishedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Votes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StatusApproval)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.County)
-            </td>
-            <td>
-                @if ((await AuthorizationService.AuthorizeAsync(
-     User, item,
-     TicketOperations.Update)).Succeeded)
-                {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <text> | </text>
-                }
-
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-
-                @if ((await AuthorizationService.AuthorizeAsync(
-     User, item,
-     TicketOperations.Delete)).Succeeded)
-                {
-                    <text> | </text>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                }
-            </td>
-        </tr>
+            <picture>
+                <img class="lazyload" src="@("~/image/" + item.ImageName)" asp-append-version="true" width="100px" height="100px" />
+            </picture>
         }
-    </tbody>
-</table>
+        else
+        {
+            <text>No image available</text>
+        }*@
+                        <div style="margin: 0; width: 65%;">
+                            @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Update)).Succeeded)
+                            {
+                                <a class="link-style1" style="margin-right: 3%;" asp-action="Edit" asp-route-id="@item.Id">Editeaza</a>
+                            }
+
+                            <a class="link-style1" style="margin-right: 3%;" asp-action="Details" asp-route-id="@item.Id">Detalii</a>
+
+                            @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Delete)).Succeeded)
+                            {
+                                <a class="link-style1" style="margin-right: 3%;" asp-action="Delete" asp-route-id="@item.Id">Sterge</a>
+                            }
+                        </div>
+                        <div style="align-self: center;">
+                                <h6 style="color: #29734a; opacity: 80%;">Situatie: @Html.DisplayFor(modelItem => item.Status)</h6>
+                            @*@if (!(item.StatusApproval == TicketStatusApproval.Approved))
+                            {
+                                <div>
+                                    <h6>Status Approval: @Html.DisplayFor(modelItem => item.StatusApproval)</h6>
+                                </div>
+                            }*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        }
+        </div>
+        <div class="col-lg-4">
+            <div class="non-semantic-protector">
+                <h1 class="ribbon2">
+                    <span class="ribbon2-content">Probleme</span>
+                </h1>
+            </div>
+            @foreach (var item in Model.Where(c => c.Type == TicketType.Matter && c.Status != TicketStatus.Done))
+            {
+                <div class="card card-1">
+                    <div class="card-header">
+                        <div class="row" style="justify-content:space-between; margin: 0;">
+                            <div style="text-align: left;">
+                                <h3 class="title-card" style="color: #134b40;">@Html.DisplayFor(modelItem => item.Title)</h3>
+                                <h6 style="color: #134b40; opacity: 70%;">@Html.DisplayFor(modelItem => item.PublishedDate)</h6>
+                            </div>
+                            <div style="text-align: right;">
+                                <a class="link-style2" style="margin-bottom: 10%;" asp-action="Vote" asp-route-id="@item.Id">Voteaza</a>
+                                <h6 style="color: #134b40; opacity: 80%;">Voturi: @Html.DisplayFor(modelItem => item.Votes)</h6>
+                            </div>
+                        </div>
+                        @*@Html.DisplayFor(modelItem => item.Type)*@
+                    </div>
+                    <div class="card-block" style="padding: .75rem 1.25rem; height: 100%;">
+                        <div style="height: 100%;">
+                            <div style="height: 100px; overflow: hidden;">
+                                <p style="color: #134b40; opacity: 75%; font-weight: 500;">@Html.DisplayFor(modelItem => item.Description)</p>
+                            </div>
+                            <div style="border-top: 1px solid rgba(0,0,0,.125); justify-content: space-between; margin:0; padding-top: 10px;" class="row">
+                                @*@if (item.ImageName != null)
+                            {
+                                <picture>
+                                    <img class="lazyload" src="@("~/image/" + item.ImageName)" asp-append-version="true" width="100px" height="100px" />
+                                </picture>
+                            }
+                            else
+                            {
+                                <text>No image available</text>
+                            }*@
+                                <div style="margin: 0; width: 65%;">
+                                    @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Update)).Succeeded)
+                                    {
+                                        <a class="link-style2" style="margin-right: 3%;" asp-action="Edit" asp-route-id="@item.Id">Editeaza</a>
+                                    }
+
+                                    <a class="link-style2" style="margin-right: 3%;" asp-action="Details" asp-route-id="@item.Id">Detalii</a>
+
+                                    @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Delete)).Succeeded)
+                                    {
+                                        <a class="link-style2" style="margin-right: 3%;" asp-action="Delete" asp-route-id="@item.Id">Sterge</a>
+                                    }
+                                </div>
+                                <div style="align-self: center;">
+                                    <h6 style="color: #134b40; opacity: 80%;">Situatie: @Html.DisplayFor(modelItem => item.Status)</h6>
+                                    @*@if (!(item.StatusApproval == TicketStatusApproval.Approved))
+                                {
+                                    <div>
+                                        <h6>Status Approval: @Html.DisplayFor(modelItem => item.StatusApproval)</h6>
+                                    </div>
+                                }*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            }
+        </div>
+        <div class="col-lg-4">
+            <div class="non-semantic-protector">
+                <h1 class="ribbon3">
+                    <span class="ribbon3-content">Rezolvate</span>
+                </h1>
+            </div>
+            @foreach (var item in Model.Where(c => c.Status == TicketStatus.Done))
+            {
+                <div class="card card-1">
+                    <div class="card-header">
+                        <div class="row" style="justify-content:space-between; margin: 0;">
+                            <div style="text-align: left;">
+                                <h3 class="title-card" style="color: #061524;">@Html.DisplayFor(modelItem => item.Title)</h3>
+                                <h6 style="color: #061524; opacity: 70%;">@Html.DisplayFor(modelItem => item.PublishedDate)</h6>
+                            </div>
+                            <div style="text-align: right;">
+                                @*<a class="link-style3" style="margin-bottom: 10%;" asp-action="Vote" asp-route-id="@item.Id">Voteaza</a>*@
+                                <h6 style="color: #061524; opacity: 80%;">Voturi: @Html.DisplayFor(modelItem => item.Votes)</h6>
+                            </div>
+                        </div>
+                        @*@Html.DisplayFor(modelItem => item.Type)*@
+                    </div>
+                    <div class="card-block" style="padding: .75rem 1.25rem; height: 100%;">
+                        <div style="height: 100%;">
+                            <div style="height: 100px; overflow: hidden;">
+                                <p style="color: #061524; opacity: 75%; font-weight: 500;">@Html.DisplayFor(modelItem => item.Description)</p>
+                            </div>
+                            <div style="border-top: 1px solid rgba(0,0,0,.125); justify-content: space-between; margin:0; padding-top: 10px;" class="row">
+                                @*@if (item.ImageName != null)
+                            {
+                                <picture>
+                                    <img class="lazyload" src="@("~/image/" + item.ImageName)" asp-append-version="true" width="100px" height="100px" />
+                                </picture>
+                            }
+                            else
+                            {
+                                <text>No image available</text>
+                            }*@
+                                <div style="margin: 0; width: 65%;">
+                                    @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Update)).Succeeded)
+                                    {
+                                        <a class="link-style3" style="margin-right: 3%;" asp-action="Edit" asp-route-id="@item.Id">Editeaza</a>
+                                    }
+
+                                    <a class="link-style3" style="margin-right: 3%;" asp-action="Details" asp-route-id="@item.Id">Detalii</a>
+
+                                    @if ((await AuthorizationService.AuthorizeAsync(
+User, item,
+TicketOperations.Delete)).Succeeded)
+                                    {
+                                        <a class="link-style3" style="margin-right: 3%;" asp-action="Delete" asp-route-id="@item.Id">Sterge</a>
+                                    }
+                                </div>
+                                <div style="align-self: center;">
+                                    <h6 style="color: #061524; opacity: 80%;">Situatie: @Html.DisplayFor(modelItem => item.Status)</h6>
+                                    @*@if (!(item.StatusApproval == TicketStatusApproval.Approved))
+                                {
+                                    <div>
+                                        <h6>Status Approval: @Html.DisplayFor(modelItem => item.StatusApproval)</h6>
+                                    </div>
+                                }*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            }
+        </div>
+        </div>
+   </div>
+
+<style>
+    .container-tickets {
+        margin: 0;
+    }
+
+    .column-title {
+        font-size: 3rem;
+    }
+
+    .ribbon1 {
+        font-size: 16px !important;
+        /* This ribbon is based on a 16px font side and a 24px vertical rhythm. I've used em's to position each element for scalability. If you want to use a different font size you may have to play with the position of the ribbon elements */
+        width: 80%;
+        position: relative;
+        background: #5CDB95;
+        color: #fff;
+        text-align: center;
+        padding: 1em 2em; /* Adjust to suit */
+        margin: 2em auto 3em; /* Based on 24px vertical rhythm. 48px bottom margin - normally 24 but the ribbon 'graphics' take up 24px themselves so we double it. */
+    }
+
+        .ribbon1:before, .ribbon1:after {
+            content: "";
+            position: absolute;
+            display: block;
+            bottom: -1em;
+            border: 1.5em solid #44ab72;
+            z-index: -1;
+        }
+
+        .ribbon1:before {
+            left: -2em;
+            border-right-width: 1.5em;
+            border-left-color: transparent;
+        }
+
+        .ribbon1:after {
+            right: -2em;
+            border-left-width: 1.5em;
+            border-right-color: transparent;
+        }
+
+        .ribbon1 .ribbon1-content:before, .ribbon1 .ribbon1-content:after {
+            content: "";
+            position: absolute;
+            display: block;
+            border-style: solid;
+            border-color: #29734a transparent transparent transparent;
+            bottom: -1em;
+        }
+
+        .ribbon1 .ribbon1-content:before {
+            left: 0;
+            border-width: 1em 0 0 1em;
+        }
+
+        .ribbon1 .ribbon1-content:after {
+            right: 0;
+            border-width: 1em 1em 0 0;
+        }
+
+    .ribbon2 {
+        font-size: 16px !important;
+        /* This ribbon is based on a 16px font side and a 24px vertical rhythm. I've used em's to position each element for scalability. If you want to use a different font size you may have to play with the position of the ribbon elements */
+        width: 80%;
+        position: relative;
+        background: #379683;
+        color: #fff;
+        text-align: center;
+        padding: 1em 2em; /* Adjust to suit */
+        margin: 2em auto 3em; /* Based on 24px vertical rhythm. 48px bottom margin - normally 24 but the ribbon 'graphics' take up 24px themselves so we double it. */
+    }
+
+        .ribbon2:before, .ribbon2:after {
+            content: "";
+            position: absolute;
+            display: block;
+            bottom: -1em;
+            border: 1.5em solid #1f6c5d;
+            z-index: -1;
+        }
+
+    .ribbon2:before {
+        left: -2em;
+        border-right-width: 1.5em;
+        border-left-color: transparent;
+    }
+
+    .ribbon2:after {
+        right: -2em;
+        border-left-width: 1.5em;
+        border-right-color: transparent;
+    }
+
+        .ribbon2 .ribbon2-content:before, .ribbon2 .ribbon2-content:after {
+            content: "";
+            position: absolute;
+            display: block;
+            border-style: solid;
+            border-color: #134b40 transparent transparent transparent;
+            bottom: -1em;
+        }
+
+    .ribbon2 .ribbon2-content:before {
+        left: 0;
+        border-width: 1em 0 0 1em;
+    }
+
+    .ribbon2 .ribbon2-content:after {
+        right: 0;
+        border-width: 1em 1em 0 0;
+    }
+
+    .ribbon3 {
+        font-size: 16px !important;
+        /* This ribbon is based on a 16px font side and a 24px vertical rhythm. I've used em's to position each element for scalability. If you want to use a different font size you may have to play with the position of the ribbon elements */
+        width: 80%;
+        position: relative;
+        background: #05386b;
+        color: #fff;
+        text-align: center;
+        padding: 1em 2em; /* Adjust to suit */
+        margin: 2em auto 3em; /* Based on 24px vertical rhythm. 48px bottom margin - normally 24 but the ribbon 'graphics' take up 24px themselves so we double it. */
+    }
+
+        .ribbon3:before, .ribbon3:after {
+            content: "";
+            position: absolute;
+            display: block;
+            bottom: -1em;
+            border: 1.5em solid #082745;
+            z-index: -1;
+        }
+
+    .ribbon3:before {
+        left: -2em;
+        border-right-width: 1.5em;
+        border-left-color: transparent;
+    }
+
+    .ribbon3:after {
+        right: -2em;
+        border-left-width: 1.5em;
+        border-right-color: transparent;
+    }
+
+        .ribbon3 .ribbon3-content:before, .ribbon3 .ribbon3-content:after {
+            content: "";
+            position: absolute;
+            display: block;
+            border-style: solid;
+            border-color: #061524 transparent transparent transparent;
+            bottom: -1em;
+        }
+
+    .ribbon3 .ribbon3-content:before {
+        left: 0;
+        border-width: 1em 0 0 1em;
+    }
+
+    .ribbon3 .ribbon3-content:after {
+        right: 0;
+        border-width: 1em 1em 0 0;
+    }
+
+        .title-card {
+            font-size: 1.3rem;
+            margin-bottom: 5%;
+            opacity: 80%;
+        }
+
+    .card-1 {
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    }
+
+        .card-1:hover {
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        }
+
+    .link-style1 {
+        color: #fff !important;
+        background: #44ab72;
+        border-radius: 10px;
+        display: inline-block;
+        padding: 0 5%;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 400;
+        box-shadow: 0 0px 1px rgba(0,0,0,0.16), 0 2px 10px rgba(0,0,0,0.23);
+        /*transition: all 0.4s ease 0s;*/
+    }
+
+    .link-style1:hover {
+        text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+        -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+        -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+        transition: all 0.4s ease 0s;
+    }
+
+    .link-style2 {
+        color: #fff !important;
+        background: #1f6c5d;
+        border-radius: 10px;
+        display: inline-block;
+        padding: 0 5%;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 400;
+        box-shadow: 0 0px 1px rgba(0,0,0,0.16), 0 2px 10px rgba(0,0,0,0.23);
+        /*transition: all 0.4s ease 0s;*/
+    }
+
+        .link-style2:hover {
+            text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+            -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+            -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+            transition: all 0.4s ease 0s;
+        }
+
+    .link-style3 {
+        color: #fff !important;
+        background: #082745;
+        border-radius: 10px;
+        display: inline-block;
+        padding: 0 5%;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 400;
+        box-shadow: 0 0px 1px rgba(0,0,0,0.16), 0 2px 10px rgba(0,0,0,0.23);
+        /*transition: all 0.4s ease 0s;*/
+    }
+
+        .link-style3:hover {
+            text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+            -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+            -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+            transition: all 0.4s ease 0s;
+        }
+
+    .add-new {
+        color: black !important;
+        text-transform: uppercase;
+        padding: 0 4%;
+        border: 4px solid black !important;
+        border-radius: 6px;
+        display: inline-block;
+        transition: all 0.3s ease 0s;
+        font-weight: 500;
+        opacity: 70%;
+    }
+
+        .add-new:hover {
+            color: #7FBC4E !important;
+            border-radius: 50px;
+            border-color: #7FBC4E !important;
+            transition: all 0.3s ease 0s;
+        }
+</style>
+
+    @*<table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PublishedDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Votes)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.StatusApproval)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.County)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ImageName)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PublishedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Votes)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StatusApproval)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.County)
+                    </td>
+                    <td>
+                        @if (item.ImageName != null)
+                        {
+                            <img class="lazyload" src="@("~/image/" + item.ImageName)" asp-append-version="true" width="100px" height="100px" />
+                        }
+                        else
+                        {
+                            <text>No image available</text>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Vote" asp-route-id="@item.Id">Vote</a>
+                        |
+                        @if ((await AuthorizationService.AuthorizeAsync(
+        User, item,
+        TicketOperations.Update)).Succeeded)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <text> | </text>
+                        }
+
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+                        @if ((await AuthorizationService.AuthorizeAsync(
+        User, item,
+        TicketOperations.Delete)).Succeeded)
+                        {
+                            <text> | </text>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>*@

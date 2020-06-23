@@ -1,8 +1,79 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@using ComunitateaMea.Extensions
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Hello!</h1>
-    <p>Bine ai venit in Comunitatea Mea!</p>
+    <div class="row">
+        <div class="home-text">
+            <h3 style="color: #637b81">Bine ai venit in ComunitateaMea</h3>
+            <h2 style="text-transform: none">@User.GetFullName()</h2>
+            <div class="paragraph">
+                <p>
+                    In comunitatea mea, fiecare dintre noi trebuie sa contribuie la alegerea prioritatilor care aduc beneficii intregii comunitati.
+                    Contribuie cu nevoile si problemele tale, iar autoritatile comunitatii vor avea acces direct la problemele si ideile de actualitate.
+                </p>
+            </div>
+            <button class="button-tickets">
+                <a class="nav-link ticket-btn" asp-area="" asp-controller="Tickets" asp-action="Index">Tichete</a>
+            </button>
+        </div>
+        <div class="hero-img">
+            <img src="~/assets/hero.svg" width="730px" height="409px" />
+        </div>
+    </div>
 </div>
+
+<style>
+    .hero-img {
+        align-content: flex-end;
+    }
+
+    .home-text {
+        margin-top: 5%;
+        font-family: grad, serif;
+        font-weight: 700;
+        font-size: 4em;
+        font-style: normal;
+        text-align: left;
+        width: 48%;
+    }
+
+    .row {
+        justify-content: space-between;
+        margin: 0;
+        margin-top: 5%;
+    }
+
+    .button-tickets {
+        border-radius: 9999px;
+        padding: 5px;
+        min-width: 200px;
+        background: #27363b;
+        color: #f5f5f5;
+        box-shadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.35);
+        border: none;
+        font-family: grad, serif;
+        font-weight: 400;
+        font-style: italic;
+        margin-top: 40px;
+        font-size: 20px;
+    }
+
+    .ticket-btn {
+        color: #f5f5f5;
+    }
+
+    .paragraph {
+        color: #27363b;
+        font-weight: 400;
+        font-style: normal;
+        opacity: 0.7;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+</style>

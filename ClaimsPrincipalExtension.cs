@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ComunitateaMea.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -8,6 +9,8 @@ namespace ComunitateaMea.Extensions
 {
     public static class ClaimsPrincipalExtension
     {
+        
+
         public static string GetFullName(this ClaimsPrincipal principal)
         {
             var fullName = principal.Claims.FirstOrDefault(c => c.Type == "FullName");
@@ -16,7 +19,7 @@ namespace ComunitateaMea.Extensions
             
         public static string GetCounty(this ClaimsPrincipal principal)
         {
-            var county = principal.Claims.FirstOrDefault(c => c.Type == "County");
+            var county = principal.Claims.Last(c => c.Type == "County");
             return county?.Value;
         }
 

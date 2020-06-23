@@ -19,7 +19,10 @@ namespace ComunitateaMea.Authorization
 
             // If not asking for approval/reject, return.
             if (requirement.Name != Constants.ApproveOperationName &&
-                requirement.Name != Constants.RejectOperationName)
+                requirement.Name != Constants.RejectOperationName  &&
+                requirement.Name != Constants.InProgressOperationName &&
+                requirement.Name != Constants.DoneOperationName &&
+                requirement.Name != Constants.NotPossibleOperationName)
             {
                 return Task.CompletedTask;
             }

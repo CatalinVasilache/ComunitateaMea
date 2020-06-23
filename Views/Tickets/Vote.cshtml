@@ -1,0 +1,77 @@
+﻿@model ComunitateaMea.Models.Ticket
+
+@{
+    ViewData["Title"] = "Vote";
+}
+
+<h4 style="margin-bottom: 15px; color: #1f6c5d;">Inainte de a vota, asigura-te ca ai parcurs tot tichetul</h4>
+<div style="font-size: 20px; font-weight: 400; color: #1f6c5d; margin-top: 15px;">
+    <hr />
+    <div class="row" style="margin: 0; margin-top: 20px;">
+        <dl class="row" style="width:64%;">
+            <dt class="col-sm-2">
+                <strong>Titlu:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Descriere:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Comunitate:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.County)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Situatie:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Status)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Voturi:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Votes)
+            </dd>
+            <dt class="col-sm-2">
+                <strong>Data publicarii:</strong>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.PublishedDate)
+            </dd>
+        </dl>
+        <div>
+            <dd class="col-sm-10">
+                @if (Model.ImageName != null)
+                {
+                    <img class="lazyload img1" src="@("~/image/" + Model.ImageName)" asp-append-version="true"/>
+                }
+            </dd>
+        </div>
+    </div>
+        <form asp-action="Vote">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Voteaza" class="btn btn-primary vote-btn" /> |
+            <a asp-action="Index">Intoarce-te la lista</a>
+        </form>
+</div>
+
+<style>
+    .img1 {
+        max-height: 500px;
+        max-width: 500px;
+    }
+
+    .vote-btn {
+        color: #134b40;
+        border-color: #134b40;
+        font-weight: 500;
+    }
+
+</style>

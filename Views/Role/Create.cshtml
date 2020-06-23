@@ -1,13 +1,13 @@
 ﻿@model string
 
-<h1 class="bg-info text-white">Create a Role</h1>
-<a asp-action="Index" class="btn btn-secondary">Back</a>
+<h4 class="text-dark" style="margin-top: 5%; margin-bottom: 1%; text-align: center;">Adauga denumirea rolului:</h4>
+
 <div asp-validation-summary="All" class="text-danger"></div>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label for="name">Name:</label>
+<form asp-action="Create" method="post" style="text-align: center;">
+    <div class="form-group" style="font-size: 1.5rem; font-weight: 400; color: #1f6c5d; text-align: center; margin-right: 30%; margin-left: 30%;">
         <input name="name" class="form-control" />
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Creeaza</button>
+    <a style="color: #1f6c5d; border-color: #1f6c5d;" asp-action="Index" class="btn btn-outline-primary">Inapoi</a>
 </form>

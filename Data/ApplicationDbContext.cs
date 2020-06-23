@@ -19,5 +19,6 @@ namespace ComunitateaMea.Data
         }
 
         public DbSet<Ticket> Ticket { get; set; }
+        public DbSet<VoteUserTicket> VoteUserTicket { get; set; }
     }
 }

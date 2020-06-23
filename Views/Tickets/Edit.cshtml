@@ -4,34 +4,32 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Ticket</h4>
+<h3 style="margin-bottom: 15px;">Editeaza</h3>
 <hr />
-<div class="row">
+<div class="row" style="font-size: 2rem; font-weight: 400; color: #1f6c5d;">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
+                <label asp-for="Title" class="control-label">Titlu</label>
+                <input asp-for="Title" class="form-control" style="color: #379683; border-width: 2px; border-color: #379683"/>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <label asp-for="Description" class="control-label">Descriere</label>
+                <input asp-for="Description" class="form-control" style="color: #379683; border-width: 2px; border-color: #379683"/>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Salveaza" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Intoarce-te la lista</a>
 </div>
 
 @section Scripts {

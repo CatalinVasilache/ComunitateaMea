@@ -39,6 +39,7 @@ namespace ComunitateaMea
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
 
+
             services.AddControllers(config =>
            {
                var policy = new AuthorizationPolicyBuilder()
