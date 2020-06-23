@@ -172,7 +172,7 @@ TicketOperations.Delete)).Succeeded)
                                 <h6 style="color: #061524; opacity: 70%;">@Html.DisplayFor(modelItem => item.PublishedDate)</h6>
                             </div>
                             <div style="text-align: right;">
-                                <a class="link-style3" style="margin-bottom: 10%;" asp-action="Vote" asp-route-id="@item.Id">Voteaza</a>
+                                @*<a class="link-style3" style="margin-bottom: 10%;" asp-action="Vote" asp-route-id="@item.Id">Voteaza</a>*@
                                 <h6 style="color: #061524; opacity: 80%;">Voturi: @Html.DisplayFor(modelItem => item.Votes)</h6>
                             </div>
                         </div>
@@ -471,20 +471,21 @@ TicketOperations.Delete)).Succeeded)
         }
 
     .add-new {
-        color: #7FBC4E !important;
+        color: black !important;
         text-transform: uppercase;
         padding: 0 4%;
-        border: 4px solid #7FBC4E !important;
+        border: 4px solid black !important;
         border-radius: 6px;
         display: inline-block;
         transition: all 0.3s ease 0s;
         font-weight: 500;
+        opacity: 70%;
     }
 
         .add-new:hover {
-            color: #05386b !important;
+            color: #7FBC4E !important;
             border-radius: 50px;
-            border-color: #05386b !important;
+            border-color: #7FBC4E !important;
             transition: all 0.3s ease 0s;
         }
 </style>

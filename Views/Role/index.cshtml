@@ -6,8 +6,10 @@
         <h3 style="margin-bottom: 3%;">Lista rolurilor</h3>
         <a style="margin-bottom:3%;" asp-action="Create" class="btn btn-primary">Creeaza un rol</a>
 
-        <table class="table table-sm table-bordered table-bordered" style="font-size: 1.5rem; font-weight: 400; color: #134b40; border-color: #1f6c5d; border-width: 2px;">
-            <tr><th>Id</th><th>Nume</th><th>Modifica</th><th>Sterge</th></tr>
+        <table class="table" style="font-size: 1.5rem; font-weight: 400; color: #134b40; border-color: #1f6c5d; border-width: 2px;">
+            <thead class="thead-dark">
+                <tr><th>Id</th><th>Nume</th><th>Modifica</th><th>Sterge</th></tr>
+            </thead>
             @foreach (var role in Model)
             {
                 <tr>
